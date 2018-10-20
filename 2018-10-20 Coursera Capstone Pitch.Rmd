@@ -1,0 +1,56 @@
+---
+title: "Capstone Project: Text Prediction Model"
+author: "Pieter van der Veere"
+date: "20 October 2018"
+output: 
+    ioslides_presentation:
+        fullscreen: yes
+        logo: "serverData/coursera_logo.png"
+        css: serverData/styles.css
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+##The model
+<div class = "white">
+For the John Hopkins Data Science Specialisation I made a text prediction model.
+The capstone project is the result of a collaboration between the university
+and SwiftKey. The aim of the project was to create a light weight model to predict
+text input, for example to be used on your phone.
+
+My model was largely based of the Katz's back-off model(1). This model states
+that for n-grams ('n' sized word combination) with a frequency below a certain
+threshold, smaller n-grams should be applied to look for better matches. The 
+threshold in my model where choosen based on the amount of n-grams needed to 
+cover 50% of total n-gram use. N-grams of size six to two were used in my model.
+
+All code can be found on github: <insert github link>
+The application can be found here: https://pieterveere.shinyapps.io/TextPredictionWebApp/
+</div>
+
+##The data
+<div class = "white">
+The main dataset on which the model is based, was provided by SwiftKey. They supplied us with extracts from
+twitter, blog and American newspapers. Only a small part of the supplied data
+was used due to limited processing power and RAM on my end.
+
+To increase to accuracy of my model I added all English idioms on Wikipedia to the 
+matching dataset.(2) As there were only roughly 8000 idioms on Wikipedia at the
+time of creation this did not slow down the prediction speed.
+</div>
+
+##Example website
+![](serverData/appExample.png)
+
+##References
+<div class = "white">
+(1) https://en.wikipedia.org/wiki/Katz%27s_back-off_model 
+(2) https://en.wiktionary.org/wiki/Category:English_idioms 
+
+Github: 
+Shiny application: https://pieterveere.shinyapps.io/TextPredictionWebApp/
+
+Swiftkey: https://swiftkey.com  
+Coursera Data Science Specialisation: https://www.coursera.org/specializations/jhu-data-science
+</div>

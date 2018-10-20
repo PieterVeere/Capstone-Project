@@ -1,0 +1,12 @@
+name: TextPredictionWebApp
+title: TextPredictionWebApp
+username:
+account: pieterveere
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 525468
+bundleId: 1652205
+url: https://pieterveere.shinyapps.io/TextPredictionWebApp/
+when: 1539984695.32377
+asMultiple: FALSE
+asStatic: FALSE

@@ -1,0 +1,157 @@
+---
+title: "Capstone Milestone Report"
+author: "Pieter van der Veere"
+date: "20 October 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = F)
+```
+
+##Introduction
+This report shall outline the progress made on the Coursera Data Science Capstone
+project. The report will comprise of three part: acquiring and cleaning the data, 
+presenting a visually representation of the most common words, demonstrating how 
+cut-offs can be calculated for your n-gram models.
+
+##Data collection
+The following code extracts a subset of the lines from the pre-downloaded corpus.
+Due to the way the way-back machine providing the corpus was set up, it was not
+possible to download it through code. A subset of lines was taken because only
+limited processing power was avalaible at the time of writing.
+
+```{r data collecting, cache= T}
+library(here)
+set.seed(2018091413)
+lines <- sample(77259, 40000)
+###77259 because it's the amount of lines in the news file
+
+#Opening files and sampling lines
+con <- file(here("data/en_US", "en_US.twitter.txt"), "r")
+twitDataSmall <- readLines(con, 1e5)
+twitDataSmall <- twitDataSmall[lines]
+close(con)
+
+con <- file(here("data/en_US", "en_US.blogs.txt"), "r")
+blogDataSmall <- readLines(con, 1e5)
+blogDataSmall <- blogDataSmall[lines]
+close(con)
+
+con <- file(here("data/en_US", "en_US.news.txt"), "r")
+newsDataSmall <- readLines(con)
+newsDataSmall <- newsDataSmall[lines]
+close(con)
+
+#Making new dataset
+dataSmall <- c(twitDataSmall, blogDataSmall, newsDataSmall)
+```
+
+##Cleaning the data
+The following code cleans up the dataset. It removes bad word, special characters
+often seen in tweets, removes digits and punctuation, and additional whitespaces
+created by any of the previous steps.
+While it is possible to stem the words and remove common words I choose not to
+do this as it makes the output of any prediction model unrepresentative of 
+real text.
+
+```{r data cleaning, cache = T}
+library(tm)
+library(here)
+badWords <- readLines(here("data/en_US", "bad-words.txt"))
+
+##Getting rid of offensive words
+badWords <- paste("\\b", badWords, "\\b", sep="", collapse = "|")
+badLines <- grep(badWords, dataSmall)
+
+if (class(badLines) == "integer") {
+    dataSmall <- dataSmall[-badLines]
+}
+
+##pre-processecing data
+ascCode <- 128:255 ###ASCII for special characters
+ascCode <- as.raw(ascCode)
+specialChar <- sapply(ascCode, rawToChar)
+specialChar <- paste(specialChar, sep = "", collapse= "|")
+
+dataSmallPreProc <- tolower(dataSmall)
+dataSmallPreProc <- gsub(pattern = specialChar, 
+                         replacement = "", x = dataSmallPreProc)
+dataSmallPreProc <- gsub(pattern = "[[:digit:]]|[[:punct:]]|", 
+                         replacement = "", x = dataSmallPreProc)
+dataSmallPreProc <- stripWhitespace(dataSmallPreProc)
+```
+
+##Frequency counting words
+The following code creates a list of the 20 most common words.
+
+```{r n-grams list}
+library(tm)
+ctrl <- list(language = "en_US", removePunctuation = T, 
+    removeNumbers = T)
+termFreq <- termFreq(dataSmallPreProc, control = ctrl)
+termFreq <- sort(termFreq, decreasing = T)
+view <- as.data.frame(termFreq)
+head(view, 20)
+```
+
+##Visually representation of most common words
+These words can then be visually represented. The graph showed that only a
+small amount of words are very frequent. This implies that not all words, or
+n-grams, would have to be included to created a fairly accurate model.
+
+```{r n-gram plot}
+library(ggplot2)
+library(gridExtra)
+
+qFreqHist1 <- ggplot(as.data.frame(termFreq), 
+    aes(y= termFreq, x= seq_along(termFreq)))
+qFreqHist1 <- qFreqHist1 + geom_line() +
+    scale_y_log10(name = "Amount, log10-scaling")
+qFreqHist1 <- qFreqHist1 + labs(title= "Frequency of all words")
+
+qFreqHist2 <- ggplot(as.data.frame(termFreq[1:100]), 
+                                   aes(y= termFreq[1:100], x= 1:100))
+qFreqHist2 <- qFreqHist2 + geom_line() +
+    scale_y_log10(name = "Amount, log10-scaling")
+qFreqHist2 <- qFreqHist2 + labs(title= "Frequency of top 100 words")
+
+rownm <- names(termFreq)[1:10]
+rownm <- factor(rownm, levels = rownm[order(termFreq, decreasing= T)])
+
+qFreqHist3 <- ggplot(as.data.frame(termFreq[1:10]), 
+        aes(x = rownm, y= termFreq[1:10]))
+qFreqHist3 <- qFreqHist3 + geom_col(aes(fill = termFreq[1:10]))
+qFreqHist3 <- qFreqHist3 + labs(title= "Top 10 words", 
+        x= "Words", y = "Frequency")
+
+library(gridExtra)
+grid.arrange(qFreqHist1, qFreqHist2, qFreqHist3)
+```
+
+
+##Cut-off point calculations
+To demonstrate the amount of words needed to cover 50% of all words used, the
+following algorithm was written. While the example is not necessairly informative
+as no one word n-grams will be used in a model. It can be used for any n-gram frequency model
+with only minor changes, being of definite use in slimming down the model.
+
+```{r cutoff calculation}
+tWordUse <- sum(termFreq, na.rm =T)
+goal <- .5
+cover <- 0
+cutOff <- 0
+tCover <- 0
+
+while(cover < goal) {
+    cutOff <- cutOff + 1
+    tCover <- tCover + termFreq[cutOff]
+    cover <- tCover/tWordUse
+    if (cover >= goal) {
+        print(cutOff)
+    }
+} 
+tWord <-length(termFreq)
+```
+The amount of words need to cover 50% of total word use is `r cutOff`, while the
+total amount of words is `r tWord`.

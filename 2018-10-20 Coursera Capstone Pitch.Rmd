@@ -25,7 +25,7 @@ threshold, smaller n-grams should be applied to look for better matches. The
 threshold in my model where choosen based on the amount of n-grams needed to 
 cover 50% of total n-gram use. N-grams of size six to two were used in my model.
 
-All code can be found on github: <insert github link>
+All code can be found on github: https://github.com/PieterVeere/Capstone-Project  
 The application can be found here: https://pieterveere.shinyapps.io/TextPredictionWebApp/
 </div>
 
@@ -48,7 +48,7 @@ time of creation this did not slow down the prediction speed.
 (1) https://en.wikipedia.org/wiki/Katz%27s_back-off_model 
 (2) https://en.wiktionary.org/wiki/Category:English_idioms 
 
-Github: 
+Github: https://github.com/PieterVeere/Capstone-Project  
 Shiny application: https://pieterveere.shinyapps.io/TextPredictionWebApp/
 
 Swiftkey: https://swiftkey.com  

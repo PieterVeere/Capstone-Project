@@ -32,8 +32,8 @@ shinyUI(
                 ),
           
                 fluidRow(
-                    a(href = "<github placeholder link", "github,"),
-                    a(href = "<slides placeholder link>", "slides about the model"),
+                    a(href = "https://github.com/PieterVeere/Capstone-Project", "github,"),
+                    a(href = "http://rpubs.com/NLNightmare/431169", "slides about the model"),
                     br(),
                     column(imageOutput("jhuLogo"), width = 4),
                     column(imageOutput("courseraJhu"), width = 4),
@@ -61,14 +61,19 @@ shinyUI(
                 time of creation this did not slow down the prediction speed."  ,
                 hr(),
 
-                "(1) https://en.wikipedia.org/wiki/Katz%27s_back-off_model"  ,
+                a(href ="https://en.wikipedia.org/wiki/Katz%27s_back-off_model", 
+                  "(1) https://en.wikipedia.org/wiki/Katz%27s_back-off_model")  ,
                 br(),
-                "(2) https://en.wiktionary.org/wiki/Category:English_idioms"  ,
+                a(href ="https://en.wiktionary.org/wiki/Category:English_idioms",
+                  "(2) https://en.wiktionary.org/wiki/Category:English_idioms"),
                 br(),
-                'Github:  ',
+                a(href ='https://github.com/PieterVeere/Capstone-Project',
+                  'Github: https://github.com/PieterVeere/Capstone-Project'),
                 br(),
-                'Swiftkey: https://swiftkey.com  ', 
+                a(href ='https://swiftkey.com',
+                  'Swiftkey: https://swiftkey.com'),
                 br(),
-                'Coursera Data Science Specialisation: https://www.coursera.org/specializations/jhu-data-science'  
+                a(href ='https://www.coursera.org/specializations/jhu-data-science',
+                  'Coursera Data Science Specialisation: https://www.coursera.org/specializations/jhu-data-science')
                 )
 )))
